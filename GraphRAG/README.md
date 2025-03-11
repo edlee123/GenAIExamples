@@ -28,7 +28,7 @@ To set up environment variables for deploying GraphRAG services, follow these st
 
    ```bash
    export host_ip=${your_hostname IP} #local IP, i.e "192.168.1.1"
-   export NEO4J_URI=${your_neo4j_url}
+   export NEO4J_URI=${your_neovv4j_url}
    export NEO4J_USERNAME=${your_neo4j_username}
    export NEO4J_PASSWORD=${your_neo4j_password}
    export PYTHONPATH=${path_to_comps}
@@ -48,6 +48,7 @@ To set up environment variables for deploying GraphRAG services, follow these st
 
    ```bash
    # on Gaudi
+   cd GenAIExamples/GraphRAG
    source ./docker_compose/intel/hpu/gaudi/set_env.sh
    ```
 
@@ -57,7 +58,7 @@ If the microservice images are available in Docker Hub they will be pulled, othe
 
 Docker compose will start 8 services: ![8 servicesi in GraphRAG](assets/8microservices.png)
 
-```bash
+```bashdocker
 cd GraphRAG/docker_compose/intel/hpu/gaudi
 docker compose -f compose.yaml up -d
 ```
@@ -66,13 +67,21 @@ docker compose -f compose.yaml up -d
 
 To chat with retrieved information, you need to upload a file using `Dataprep` service.
 
-Here is an example of `Nike 2023` pdf.
+Please download the Nike 2023 pdf as follows
 
 ```bash
-# download pdf file
 wget https://raw.githubusercontent.com/opea-project/GenAIComps/v1.1/comps/retrievers/redis/data/nke-10k-2023.pdf
+```
+
+Then upload the `Nike 2023` pdf.
+
+```bash
 # upload pdf file with dataprep
 curl -X POST "http://${host_ip}:6004/v1/dataprep" \
+    -H "Content-Type: multipart/form-data" \
+    -F "files=@./nke-10k-2023.pdf"
+    
+curl -X POST "http://${host_ip}:${DATAPREP_PORT}/v1/dataprep" \
     -H "Content-Type: multipart/form-data" \
     -F "files=@./nke-10k-2023.pdf"
 ```
