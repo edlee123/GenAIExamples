@@ -29,12 +29,17 @@ To set up environment variables for deploying GraphRAG services, follow these st
    ```bash
    export host_ip=${your_hostname IP} #local IP, i.e "192.168.1.1"
    export NEO4J_URI=${your_neovv4j_url}
-   export NEO4J_USERNAME=${your_neo4j_username}
+   export NEO4J_USERNAME="neo4j"
    export NEO4J_PASSWORD=${your_neo4j_password}
    export PYTHONPATH=${path_to_comps}
    export OPENAI_KEY=${your_openai_api_key} #optional, when not provided will use smaller models TGI/TEI
    export HUGGINGFACEHUB_API_TOKEN=${your_hf_token} #needed for TGI/TEI models
+   export DATAPREP_PORT=11103
    ```
+
+Please note no need to create a Neo4J account since this app relies on the Neo4J container. The `your_neo4j_password`
+can be set arbitrarily as you wish (see [Neo4j docker introduction](https://neo4j.com/docs/operations-manual/current/docker/introduction/)). 
+The initial `NEO4J_USERNAME` must be "neo4j" as per the docs.
 
 2. If you are in a proxy environment, also set the proxy-related environment variables:
 
@@ -58,7 +63,7 @@ If the microservice images are available in Docker Hub they will be pulled, othe
 
 Docker compose will start 8 services: ![8 servicesi in GraphRAG](assets/8microservices.png)
 
-```bashdocker
+```bash
 cd GraphRAG/docker_compose/intel/hpu/gaudi
 docker compose -f compose.yaml up -d
 ```
@@ -67,7 +72,7 @@ docker compose -f compose.yaml up -d
 
 To chat with retrieved information, you need to upload a file using `Dataprep` service.
 
-Please download the Nike 2023 pdf as follows
+Please download the Nike 2023 pdf as follows:
 
 ```bash
 wget https://raw.githubusercontent.com/opea-project/GenAIComps/v1.1/comps/retrievers/redis/data/nke-10k-2023.pdf
@@ -77,11 +82,7 @@ Then upload the `Nike 2023` pdf.
 
 ```bash
 # upload pdf file with dataprep
-curl -X POST "http://${host_ip}:6004/v1/dataprep" \
-    -H "Content-Type: multipart/form-data" \
-    -F "files=@./nke-10k-2023.pdf"
-    
-curl -X POST "http://${host_ip}:${DATAPREP_PORT}/v1/dataprep" \
+curl -X POST "http://${host_ip}:${DATAPREP_PORT}/v1/dataprep/ingest" \
     -H "Content-Type: multipart/form-data" \
     -F "files=@./nke-10k-2023.pdf"
 ```
