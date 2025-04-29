@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Use node 20.11.1 as the base image
-FROM node:20.11.1 as base
-FROM base as builder
+FROM node:20.11.1 AS base
+FROM base AS builder
 
 
 # Update package manager and install Git
@@ -22,8 +22,10 @@ WORKDIR /app
 COPY --from=builder /app/build build/
 COPY --from=builder /app/node_modules node_modules/
 COPY --from=builder /app/package.json .
-EXPOSE 3000
+# Changed default node port to 5173, to be consistent with OPEA defaults.
 ENV NODE_ENV=production
+ENV PORT=5173
+EXPOSE ${PORT}
 # Fixing a UID. ALlows testing locally in docker
 USER 1001
-CMD [ "node", "build" ]
+CMD ["sh", "-c", "node build/index.js --port ${PORT} --host 0.0.0.0"]
