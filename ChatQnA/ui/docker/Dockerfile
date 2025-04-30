@@ -16,18 +16,15 @@ COPY ./svelte/ ./
 RUN npm run build
 RUN npm prune --production
 
-# Final production image
 FROM base
 WORKDIR /app
 COPY --from=builder /app/build build/
 COPY --from=builder /app/node_modules node_modules/
 COPY --from=builder /app/package.json .
-
+# Changed default node port to 5173, to be consistent with OPEA defaults.
 ENV NODE_ENV=production
 ENV PORT=5173
 EXPOSE ${PORT}
-
+# Fixing a UID. ALlows testing locally in docker
 USER 1001
-
-# Run the production build with port configuration
 CMD ["sh", "-c", "node build/index.js --port ${PORT} --host 0.0.0.0"]
