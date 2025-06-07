@@ -25,9 +25,10 @@ Build images:
 
 ```bash
 cd ~/
-git clone https://github.com/opea-project/GenAIExamples.git
+
 git clone https://github.com/vllm-project/vllm.git
-git clone https://github.com/opea-project/GenAIComps.git
+git clone -b graphrag_preview https://github.com/edlee123/GenAIExamples.git
+git clone -b graphrag_preview https://github.com/edlee123/GenAIComps.git
 
 # vllm-service
 cd vllm/
