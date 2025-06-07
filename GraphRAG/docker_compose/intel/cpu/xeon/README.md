@@ -84,9 +84,11 @@ To set up environment variables for deploying GraphRAG services, follow these st
    ```bash
     # For simplicity Openrouter.ai is used as an endpoint for both dataprep and retriever components.
     # These endpoints could be configured to any openAI-like endpoint.
+
     export OPENROUTER_KEY="mykey"
     export HUGGINGFACEHUB_API_TOKEN="mytoken"
 
+    cd ~/GenAIExamples/GraphRAG/docker_compose/intel/cpu/xeon
     source set_env.sh
 
     # Below will override some of these defaults in set_env.sh
