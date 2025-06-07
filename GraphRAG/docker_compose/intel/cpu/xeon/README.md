@@ -35,6 +35,14 @@ VLLM_VER=v0.8.3
 git checkout "${VLLM_VER}"
 docker build --no-cache -f docker/Dockerfile.cpu -t opea/vllm-cpu:"${TAG:-latest}" --shm-size=128g .
 
+# opea/llm-textgen 
+cd ~/GenAIComps
+docker build -t opea/llm-textgen:latest \
+    --build-arg "no_proxy=${no_proxy}" \
+    --build-arg "https_proxy=${https_proxy}" \
+    --build-arg "http_proxy=${http_proxy}" \
+    -f comps/llms/src/text-generation/Dockerfile .
+
 # opea/dataprep
 cd ~/GenAIComps
 docker build -t opea/dataprep:latest \
